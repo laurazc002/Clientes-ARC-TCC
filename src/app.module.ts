@@ -1,24 +1,26 @@
 import { Module } from '@nestjs/common';
-import { AuthModule } from './auth/auth.module';
-import { GeneralModule } from './general/general.module';
+import { ProjectModule } from './project/project.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'mssql',
-      host: '192.168.219.229',
-      port: 1433,
-      username: 'sa',
-      password: 'sqlTCCdesarrollop*',
-      database: 'dbARC',
-      stream: false,
-      options: {
-        encrypt: false,
-        enableArithAbort: true,
-        // trustServerCertificate: true,
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRoot({ 
+    type: 'mssql',
+    database: process.env.MSSQL_DATABASE,
+    host: process.env.MSSQL_HOST,
+    password: process.env.MSSQL_PASSWORD,
+    port: +process.env.MSSQL_PORT,
+    username: process.env.MSSQL_USERNAME,
+    stream: false,
+    options: { 
+      encrypt: false, 
+      enableArithAbort: false, 
+      // trustServerCertificate: true,
       },
-      entities: [__dirname + '/**/*.entity{.ts,.js}'], }),AuthModule, GeneralModule, 
+      entities: [__dirname + '/**/*.entity{.ts,.js}'], }),AuthModule,ProjectModule, 
   ],
 })
 export class AppModule {}
